@@ -12,6 +12,11 @@ from make_data_frame import make_data_frame
 from settings import csv_folder, logger_path, check_pointer_path
 from utils import make_yaml
 
+# TODO:
+# There are duplicate names in species which can be merged:
+# bottlenose_dolphin and bottlenose_dolhin,
+# killer_whale and kiler_whale.
+
 
 dataset, df = make_data_frame(csv_folder,
                               'train_df.csv',
