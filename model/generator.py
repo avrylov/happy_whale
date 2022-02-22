@@ -1,7 +1,3 @@
-import os
-
-import numpy as np
-import torch
 from torch.utils.data import Dataset
 import cv2
 
@@ -9,13 +5,28 @@ import cv2
 class MyDataset(Dataset):
     def __init__(self,
                  df,
+                 crop=False,
                  transform=None
                  ):
         self.df = df.copy()
+        self.crop = crop
         self.transform = transform
 
     def __len__(self):
         return len(self.df)
+
+    def crop_image(self, row, image, image_name):
+        if image_name == 'first':
+            bbox = row['bbox_voc_a']
+            xmin, ymin, xmax, ymax = bbox
+            xmin, ymin, xmax, ymax = int(xmin), int(ymin), int(xmax), int(ymax)
+            image = image[ymin:ymax, xmin:xmax]
+        else:
+            bbox = row['bbox_voc_b']
+            xmin, ymin, xmax, ymax = bbox
+            xmin, ymin, xmax, ymax = int(xmin), int(ymin), int(xmax), int(ymax)
+            image = image[ymin:ymax, xmin:xmax]
+        return image
 
     def __get_input(self, row):
 
@@ -37,6 +48,15 @@ class MyDataset(Dataset):
         row = self.df.iloc[index, :]
         inputs = self.__get_input(row)
         labels = self.__get_output(row)
+
+        if self.crop:
+            image_a = inputs['first']
+            image_b = inputs['second']
+
+            image_a = self.crop_image(row, image_a, 'first')
+            image_b = self.crop_image(row, image_b, 'second')
+
+            inputs = {'first': image_a, 'second': image_b}
 
         if self.transform:
             image_a = inputs['first']

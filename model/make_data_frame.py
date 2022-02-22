@@ -1,6 +1,8 @@
 import os
+import pickle
+
 import pandas as pd
-from settings import data_folder
+from settings import data_folder, data_path
 
 
 def make_data_frame(csv_folder: str, train_df_name: str, validate_df_name: str, test_df_name: str):
@@ -12,14 +14,20 @@ def make_data_frame(csv_folder: str, train_df_name: str, validate_df_name: str, 
     validate_df = pd.read_csv(validate_df_path)
     test_df = pd.read_csv(test_df_path)
 
-    def abs_path(df):
+    with open(os.path.join(data_path, 'id_bbox_array.pickle'), 'rb') as handle:
+        d_id_bbox_array = pickle.load(handle)
+
+    def meta_change(df):
         df['image_a'] = df.apply(lambda x: os.path.join(data_folder, x['image_a']), axis=1)
         df['image_b'] = df.apply(lambda x: os.path.join(data_folder, x['image_b']), axis=1)
+
+        df['bbox_voc_a'] = df['image_a_id'].map(d_id_bbox_array)
+        df['bbox_voc_b'] = df['image_b_id'].map(d_id_bbox_array)
         return df
 
-    train_df = abs_path(train_df)
-    validate_df = abs_path(validate_df)
-    test_df = abs_path(test_df)
+    train_df = meta_change(train_df)
+    validate_df = meta_change(validate_df)
+    test_df = meta_change(test_df)
 
     dataset = {
         'dataset': [train_df_path, validate_df_path, test_df_path],
