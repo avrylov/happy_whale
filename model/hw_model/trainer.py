@@ -1,22 +1,10 @@
-import os
 
 import torch
 from torch.nn import functional as F
 import torchmetrics.functional as M
 import pytorch_lightning as pl
 
-from hw_model.trainer import TorchLightNet as TFmodel
-
-chk_path = os.path.join(
-    '/home/misha/geoframework/models/rnd/happy_whale/check_points/1.1.2',
-    'epoch=51-val_loss=0.6552-val_acc=0.6245.ckpt'
-)
-model = TFmodel.load_from_checkpoint(checkpoint_path=chk_path)
-n_params = len(list(model.parameters()))
-
-for idx, param in enumerate(model.parameters()):
-    if idx not in list(range(n_params - 3, n_params)):
-        param.requires_grad = False
+from .model import SNUNet
 
 
 class TorchLightNet(pl.LightningModule):
@@ -26,22 +14,21 @@ class TorchLightNet(pl.LightningModule):
         self.lr = lr
         self.weight_decay = weight_decay
         self.save_hyperparameters()
-        self.model = model
+        self.model = SNUNet()
 
     def forward(self, inputs):
-        # im_a = inputs['first']
-        # im_b = inputs['second']
-        out = self.model(inputs)
+        im_a = inputs['first']
+        im_b = inputs['second']
+        out = self.model(im_a, im_b)
         return out
 
     def training_step(self, batch, batch_idx):
         idx, inputs, labels = batch
-        # im_a = inputs['first']
-        # im_b = inputs['second']
+        im_a = inputs['first']
+        im_b = inputs['second']
         labels = torch.unsqueeze(labels, dim=1)
 
-        preds = self.model(inputs)
-        # im_a.float(), im_b.float()
+        preds = self.model(im_a.float(), im_b.float())
         logits = torch.sigmoid(preds)
         loss = F.binary_cross_entropy_with_logits(logits.float(), labels.float())
 
@@ -50,12 +37,11 @@ class TorchLightNet(pl.LightningModule):
 
     def evaluate(self, batch, stage=None):
         idx, inputs, labels = batch
-        # im_a = inputs['first']
-        # im_b = inputs['second']
+        im_a = inputs['first']
+        im_b = inputs['second']
         labels = torch.unsqueeze(labels, dim=1)
 
-        preds = self.model(inputs)
-        # im_a.float(), im_b.float()
+        preds = self.model(im_a.float(), im_b.float())
         logits = torch.sigmoid(preds)
         loss = F.binary_cross_entropy_with_logits(logits.float(), labels.float())
 
