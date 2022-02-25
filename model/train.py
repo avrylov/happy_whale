@@ -25,8 +25,8 @@ train_full_batch = (train.shape[0] // batch_size) * batch_size
 
 train_transform = A.Compose(
     [
-        A.Resize(width=224, height=224),
-        A.CenterCrop(width=128, height=128),
+        A.Resize(width=128, height=128),
+        # A.CenterCrop(width=128, height=128),
         A.HorizontalFlip(p=0.5),
         A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5),
         A.RandomBrightnessContrast(p=0.25),
