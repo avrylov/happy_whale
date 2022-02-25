@@ -23,6 +23,9 @@ def make_data_frame(csv_folder: str, train_df_name: str, validate_df_name: str, 
 
         df['bbox_voc_a'] = df['image_a_id'].map(d_id_bbox_array)
         df['bbox_voc_b'] = df['image_b_id'].map(d_id_bbox_array)
+
+        df = df[df['bbox_voc_a'].notna()].reset_index(drop=True)
+        df = df[df['bbox_voc_b'].notna()].reset_index(drop=True)
         return df
 
     train_df = meta_change(train_df)
