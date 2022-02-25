@@ -20,7 +20,7 @@ dataset, df = make_data_frame(csv_folder,
 train = df.get('train')
 validate = df.get('validate')
 
-batch_size = 32
+batch_size = 64
 train_full_batch = (train.shape[0] // batch_size) * batch_size
 
 train_transform = A.Compose(
@@ -36,7 +36,7 @@ train_transform = A.Compose(
     ],
     additional_targets={'image_b': 'image'}
 )
-train_dataset = MyDataset(train[:train_full_batch], transform=train_transform)
+train_dataset = MyDataset(train[:train_full_batch], crop=True, transform=train_transform)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, pin_memory=True, shuffle=True, num_workers=6)
 
 val_transform = A.Compose(
@@ -47,7 +47,8 @@ val_transform = A.Compose(
     ],
     additional_targets={'image_b': 'image'}
 )
-val_dataset = MyDataset(validate, transform=val_transform)
+
+val_dataset = MyDataset(validate, crop=True, transform=val_transform)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, pin_memory=True, shuffle=False, num_workers=6)
 
 logger = loggers.TensorBoardLogger(logger_path)
