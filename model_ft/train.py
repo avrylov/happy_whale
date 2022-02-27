@@ -20,7 +20,7 @@ dataset, df = make_data_frame(csv_folder,
 train = df.get('train')
 validate = df.get('validate')
 
-batch_size = 64
+batch_size = 16
 train_full_batch = (train.shape[0] // batch_size) * batch_size
 
 train_transform = A.Compose(
@@ -67,7 +67,7 @@ pl_model = TorchLightNet(lr=1e-3, weight_decay=5e-4)
 make_yaml(pl_model, dataset, check_pointer_path)
 
 trainer = pl.Trainer(
-    devices='0',
+    devices='1',
     accelerator='gpu',
     logger=logger,
     callbacks=[es, check_pointer],

@@ -8,7 +8,7 @@ project_root = os.path.join(rebel_path, 'models/rnd/happy_whale/')
 data_folder = os.path.join(data_path, 'train_images')
 
 exp = 'exp1.1'
-sub_exp = exp.replace('exp', '') + '.5'
+sub_exp = exp.replace('exp', '') + '.7_ft'
 
 csv_folder = os.path.join(project_root, 'csv')
 exp_root = os.path.join(project_root, exp)

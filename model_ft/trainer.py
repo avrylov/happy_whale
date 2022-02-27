@@ -12,11 +12,6 @@ chk_path = os.path.join(
     'epoch=51-val_loss=0.6552-val_acc=0.6245.ckpt'
 )
 model = TFmodel.load_from_checkpoint(checkpoint_path=chk_path)
-n_params = len(list(model.parameters()))
-
-for idx, param in enumerate(model.parameters()):
-    if idx not in list(range(n_params - 3, n_params)):
-        param.requires_grad = False
 
 
 class TorchLightNet(pl.LightningModule):
@@ -60,7 +55,7 @@ class TorchLightNet(pl.LightningModule):
         loss = F.binary_cross_entropy_with_logits(logits.float(), labels.float())
 
         threshold = torch.tensor([0.5])
-        device = torch.device('cuda:0')
+        device = torch.device('cuda:1')
         threshold = threshold.to(device, dtype=torch.float)
         bi_preds = (logits > threshold).float() * 1
         acc = M.accuracy(bi_preds.int(), labels.int())
