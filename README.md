@@ -6,11 +6,16 @@
 
 ### 1. Cropping images
 ./data/crop/...
-![img.png](readme_images/img.png)
-![img.png](readme_images/img_1.png)
 
-### 2. Identification model
+![alt text](readme_images/img.png)
+![alt text](readme_images/img_1.png)
+
+### 2. Identification whale model
 ./model/train.py
+
+**check for pairs**
+![alt text](readme_images/pair_0.png)
+![alt text](readme_images/pair_1.png)
 
 confusion matrix: 
 ![alt text](readme_images/cm.png)
