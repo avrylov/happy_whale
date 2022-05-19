@@ -1,8 +1,8 @@
 import os
 import torch
 
-rebel_path = '/home/misha/geoframework/'
-data_path = '/media/storage3/data3T/happy_whale'
+rebel_path = ''
+data_path = ''
 
 project_root = os.path.join(rebel_path, 'models/rnd/happy_whale/')
 data_folder = os.path.join(data_path, 'train_images')
